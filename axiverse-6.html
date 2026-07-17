@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AXIVERSE — Built in silence.</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root{
+    --bg: #08090b;
+    --panel: #101216;
+    --panel-line: #1c1f26;
+    --base-blue: #0052ff;
+    --base-blue-dim: #0052ff33;
+    --electric: #6e9bff;
+    --ink: #e9eaee;
+    --muted: #7b8190;
+    --faint: #4a4f5a;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  ::selection{ background:var(--base-blue); color:#fff; }
+
+  .noise{
+    position:fixed; inset:0; pointer-events:none; z-index:1;
+    opacity:0.035; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ---------- axis mark (signature) ---------- */
+  .axis-field{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .axis-mark{
+    width:min(70vw, 720px); height:min(70vw, 720px);
+    opacity:0.14;
+    animation: spin 90s linear infinite;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:10;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:22px 5vw;
+    backdrop-filter:blur(10px);
+    background:linear-gradient(to bottom, rgba(8,9,11,0.85), transparent);
+  }
+  .logo{
+    display:flex; align-items:center; gap:10px;
+    font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:15px;
+    letter-spacing:0.08em; text-transform:uppercase;
+  }
+  .logo svg{ width:18px; height:18px; }
+
+  section{ position:relative; z-index:2; }
+
+  /* ---------- hero ---------- */
+  .hero{
+    min-height:auto;
+    padding:170px 6vw 120px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center;
+  }
+  .built-on{
+    display:flex; align-items:center; gap:8px;
+    font-family:'JetBrains Mono', monospace; font-size:13px;
+    color:var(--muted); letter-spacing:0.02em;
+  }
+  .built-on span, .built-on svg{ vertical-align:middle; }
+
+  .wordmark{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:clamp(48px, 9vw, 140px);
+    letter-spacing:0.06em;
+    color:#fff;
+    margin-bottom:8px;
+    text-shadow:0 0 60px var(--base-blue-dim);
+  }
+
+  h1{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    font-size:clamp(24px, 3.2vw, 44px);
+    line-height:1.15;
+    letter-spacing:-0.01em;
+    max-width:900px;
+  }
+  h1 .accent{
+    background:linear-gradient(90deg, var(--electric), var(--base-blue));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+
+  .hero-tagline{
+    margin-top:28px;
+    color:var(--muted); font-size:14px; line-height:1.9;
+    font-family:'JetBrains Mono', monospace;
+    letter-spacing:0.02em;
+  }
+
+  .hero-cta{
+    margin-top:44px; display:flex; gap:18px; flex-wrap:wrap; justify-content:center;
+  }
+  .btn{
+    font-family:'JetBrains Mono', monospace; font-size:clamp(13px, 1vw, 15px);
+    padding:17px 34px; border-radius:2px;
+    text-decoration:none; letter-spacing:0.03em;
+    transition:all .2s ease;
+    display:inline-flex; align-items:center; gap:8px;
+  }
+  .btn-primary{
+    background:var(--base-blue); color:#fff; font-weight:500;
+  }
+  .btn-primary:hover{ background:var(--electric); transform:translateY(-1px); }
+  .btn-ghost{
+    border:1px solid var(--panel-line); color:var(--ink);
+  }
+  .btn-ghost:hover{ border-color:var(--base-blue); color:var(--electric); }
+
+  /* ---------- manifesto ---------- */
+  .manifesto{
+    padding:100px 6vw; max-width:1160px; margin:0 auto;
+    border-top:1px solid var(--panel-line);
+  }
+  .manifesto-item{
+    display:grid; grid-template-columns:150px 1fr; gap:40px;
+    padding:34px 0; border-bottom:1px solid var(--panel-line);
+  }
+  .manifesto-item:first-child{ padding-top:0; }
+  .manifesto-item:last-child{ border-bottom:none; }
+  .m-label{
+    font-family:'JetBrains Mono', monospace; font-size:clamp(12px, 0.85vw, 14px);
+    color:var(--faint); text-transform:uppercase; letter-spacing:0.1em;
+    padding-top:6px;
+  }
+  .m-text{
+    font-family:'Space Grotesk', sans-serif; font-size:clamp(22px, 2.1vw, 30px); font-weight:500;
+    line-height:1.45; color:var(--ink);
+  }
+  .m-text em{
+    color:var(--electric); font-style:normal;
+  }
+
+  /* ---------- token card ---------- */
+  .token-section{
+    padding:80px 6vw 120px; display:flex; justify-content:center;
+    border-top:1px solid var(--panel-line);
+  }
+  .token-card{
+    width:100%; max-width:680px;
+    background:var(--panel); border:1px solid var(--panel-line);
+    padding:clamp(28px, 5vw, 48px); position:relative; overflow:hidden;
+  }
+  .token-card::before{
+    content:''; position:absolute; top:0; left:0; right:0; height:1px;
+    background:linear-gradient(90deg, transparent, var(--base-blue), transparent);
+  }
+  .token-head{
+    display:flex; justify-content:space-between; align-items:flex-start;
+    margin-bottom:36px; gap:12px; flex-wrap:wrap;
+  }
+  .token-name{ font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:clamp(24px, 2vw, 30px); }
+  .token-ticker{ font-family:'JetBrains Mono', monospace; color:var(--electric); font-size:clamp(14px, 1.4vw, 16px); margin-top:6px; }
+  .status-pill{
+    font-family:'JetBrains Mono', monospace; font-size:clamp(12px, 1.1vw, 13px);
+    border:1px solid var(--base-blue); color:var(--electric);
+    padding:7px 16px; border-radius:20px; letter-spacing:0.05em;
+    text-transform:uppercase; white-space:nowrap;
+  }
+  .token-row{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:18px 0; border-top:1px solid var(--panel-line);
+    font-family:'JetBrains Mono', monospace; font-size:clamp(15px, 1.6vw, 17px);
+    gap:12px;
+  }
+  .token-row .k{ color:var(--faint); }
+  .token-row .v{ color:var(--ink); text-align:right; }
+  .token-card .btn-primary{
+    width:100%; justify-content:center; margin-top:28px; padding:16px;
+  }
+
+  footer{
+    padding:48px 6vw; text-align:center;
+    border-top:1px solid var(--panel-line);
+    font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--faint);
+  }
+
+  @media (max-width:640px){
+    .manifesto-item{ grid-template-columns:1fr; gap:10px; }
+    .hero{ padding:150px 6vw 80px; }
+    .axis-mark{ width:90vw; height:90vw; }
+    .manifesto{ padding:70px 6vw; }
+    .manifesto-item{ padding:26px 0; }
+    .token-section{ padding:60px 6vw 90px; }
+    .hero-cta{ margin-top:32px; flex-direction:column; width:100%; }
+    .hero-cta .btn{ justify-content:center; }
+    .built-on{ font-size:11px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="noise"></div>
+<div class="axis-field">
+  <svg class="axis-mark" viewBox="0 0 200 200" fill="none">
+    <circle cx="100" cy="100" r="90" stroke="#0052ff" stroke-width="0.5"/>
+    <circle cx="100" cy="100" r="60" stroke="#6e9bff" stroke-width="0.5"/>
+    <line x1="100" y1="0" x2="100" y2="200" stroke="#0052ff" stroke-width="0.5"/>
+    <line x1="0" y1="100" x2="200" y2="100" stroke="#0052ff" stroke-width="0.5"/>
+    <line x1="30" y1="30" x2="170" y2="170" stroke="#1c1f26" stroke-width="0.5"/>
+    <line x1="170" y1="30" x2="30" y2="170" stroke="#1c1f26" stroke-width="0.5"/>
+    <circle cx="100" cy="100" r="4" fill="#6e9bff"/>
+  </svg>
+</div>
+
+<header>
+  <div class="logo">
+    <svg viewBox="0 0 24 24" fill="none">
+      <path d="M12 2 L13.2 10.8 L22 12 L13.2 13.2 L12 22 L10.8 13.2 L2 12 L10.8 10.8 Z" fill="#6e9bff"/>
+    </svg>
+    Axiverse
+  </div>
+  <div class="built-on">Built on <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><circle cx="12" cy="12" r="10" stroke="#0052ff" stroke-width="1.6"/><line x1="7" y1="12" x2="17" y2="12" stroke="#0052ff" stroke-width="1.6"/></svg> Base</div>
+</header>
+
+<section class="hero">
+  <div class="wordmark">AXIVERSE</div>
+  <h1>Built in silence.<br><span class="accent">Priced in conviction.</span></h1>
+  <p class="hero-tagline">No roadmap.<br>No promises.<br>Just the axis.</p>
+  <div class="hero-cta">
+    <a href="https://ape.store/base/0x2dd9cc494a2601334e27caec094a6060bbdb5f33" target="_blank" class="btn btn-primary">↗ Buy on ape.store</a>
+    <a href="https://x.com/Axiversedotxyz" target="_blank" class="btn btn-ghost">𝕏 Follow on X</a>
+  </div>
+</section>
+
+<section class="manifesto" id="manifesto">
+  <div class="manifesto-item">
+    <div class="m-label">Origin</div>
+    <div class="m-text">No name behind this. <em>No face, no story arc.</em> Just an axis someone is building around.</div>
+  </div>
+  <div class="manifesto-item">
+    <div class="m-label">Supply</div>
+    <div class="m-text">100% to the curve. <em>Nothing held back</em> — not because it's generous, because there's nothing to hold.</div>
+  </div>
+  <div class="manifesto-item">
+    <div class="m-label">Utility</div>
+    <div class="m-text">None promised. <em>None implied.</em> If something gets built around this axis, you'll see it happen — not read about it happening.</div>
+  </div>
+  <div class="manifesto-item">
+    <div class="m-label">Conviction</div>
+    <div class="m-text">You're not buying a product. <em>You're buying early proximity</em> to whatever this becomes.</div>
+  </div>
+</section>
+
+<section class="token-section" id="token">
+  <div class="token-card">
+    <div class="token-head">
+      <div>
+        <div class="token-name">Axiverse</div>
+        <div class="token-ticker">$AXIV</div>
+      </div>
+      <div class="status-pill">Live</div>
+    </div>
+    <div class="token-row"><span class="k">Network</span><span class="v">Base</span></div>
+    <div class="token-row"><span class="k">Launchpad</span><span class="v">ape.store</span></div>
+    <div class="token-row"><span class="k">Contract</span><span class="v" style="font-size:13px;">0x2dd9...b5f33</span></div>
+    <div class="token-row"><span class="k">Team allocation</span><span class="v">0%</span></div>
+    <a href="https://ape.store/base/0x2dd9cc494a2601334e27caec094a6060bbdb5f33" target="_blank" class="btn btn-primary">Track launch on ape.store →</a>
+  </div>
+</section>
+
+<footer>
+  AXIVERSE · Base network · <a href="https://x.com/Axiversedotxyz" target="_blank" style="color:var(--electric);text-decoration:none;">Follow on X</a>
+</footer>
+
+</body>
+</html>
